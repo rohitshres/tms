@@ -15,8 +15,7 @@ async def main():
     # Find the dialog by name
     async for dialog in client.iter_dialogs():
         if dialog.name == group_name:
-            group_entity = dialog.entity
-            print(f"Group '{group_name}'found.")
+            group_entity = dialog.entity           
             break
     else:
         print(f"Group '{group_name}' not found.")
@@ -27,8 +26,7 @@ async def main():
     if os.path.exists(last_id_file):
         with open(last_id_file, "r") as f:
             try:
-                last_id = int(f.read().strip())
-                print(f"Last Id '{last_id}'.")
+                last_id = int(f.read().strip())                
             except:
                 last_id = 0
 
