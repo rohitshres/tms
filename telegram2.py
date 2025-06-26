@@ -16,6 +16,7 @@ async def main():
     async for dialog in client.iter_dialogs():
         if dialog.name == group_name:
             group_entity = dialog.entity
+            print(f"Group '{group_name}'found.")
             break
     else:
         print(f"Group '{group_name}' not found.")
@@ -27,6 +28,7 @@ async def main():
         with open(last_id_file, "r") as f:
             try:
                 last_id = int(f.read().strip())
+                print(f"Last Id '{last_id}'.")
             except:
                 last_id = 0
 
@@ -37,6 +39,7 @@ async def main():
             break
         if message.text:
             messages.append((message.id, message.text))
+            print(f"message '{messages}'")
         if message.id > new_last_id:
             new_last_id = message.id
 
