@@ -2,7 +2,7 @@ const { exec } = require('child_process');
 
 function runScripts() {
     console.log(`[${new Date().toLocaleString()}] Running telegram.py...`);
-    exec('python telegram.py', (err, stdout, stderr) => {
+    exec('python telegram2.py', (err, stdout, stderr) => {
         if (err) {
             console.error(`Error running telegram.py: ${stderr}`);
             return;
