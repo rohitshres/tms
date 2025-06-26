@@ -1,7 +1,15 @@
 const { exec } = require('child_process');
 
+let nextRunSeconds = 0;
+const intervalSeconds = 5 * 60; // 5 minutes
+
 function showLiveTime() {
-    process.stdout.write('\r' + new Date().toLocaleString());
+    process.stdout.write(
+        `\r${new Date().toLocaleString()} | Next run in: ${Math.floor(nextRunSeconds / 60)
+            .toString()
+            .padStart(2, '0')}:${(nextRunSeconds % 60).toString().padStart(2, '0')} `
+    );
+    if (nextRunSeconds > 0) nextRunSeconds--;
 }
 
 function runScripts() {
@@ -22,11 +30,12 @@ function runScripts() {
             console.log(stdout2);
         });
     });
+    nextRunSeconds = intervalSeconds;
 }
 
-// Show live time every second
+// Show live time and countdown every second
 setInterval(showLiveTime, 1000);
 
 // Run immediately, then every 5 minutes (300000 ms)
 runScripts();
-setInterval(runScripts, 5 * 60 * 1000);
+setInterval(runScripts, intervalSeconds * 1000);
