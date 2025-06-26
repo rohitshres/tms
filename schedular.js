@@ -1,8 +1,12 @@
 const { exec } = require('child_process');
 
+function showLiveTime() {
+    process.stdout.write('\r' + new Date().toLocaleString());
+}
+
 function runScripts() {
-    console.log(`[${new Date().toLocaleString()}] Running telegram.py...`);
-    exec('python telegram2.py', (err, stdout, stderr) => {
+    console.log(`\n[${new Date().toLocaleString()}] Running telegram.py...`);
+    exec('python3 telegram2.py', (err, stdout, stderr) => {
         if (err) {
             console.error(`Error running telegram.py: ${stderr}`);
             return;
@@ -19,6 +23,9 @@ function runScripts() {
         });
     });
 }
+
+// Show live time every second
+setInterval(showLiveTime, 1000);
 
 // Run immediately, then every 5 minutes (300000 ms)
 runScripts();
