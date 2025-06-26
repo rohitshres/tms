@@ -4,10 +4,7 @@ const { Client, LocalAuth } = require('whatsapp-web.js');
 
 const client = new Client({
     authStrategy: new LocalAuth(),
-    puppeteer: { 
-        handleSIGINT: true,
-        headless: true // Ensure headless mode for Ubuntu
-    }
+    puppeteer: { handleSIGINT: true }
 });
 
 client.on('qr', (qr) => {
@@ -31,8 +28,8 @@ client.on('ready', async () => {
         const groupId = '120363402373814473@g.us'; // Replace with your actual group ID
         const groupId2 = '120363418931905115@g.us';
 
-        // Split messages by double new line (handles both Windows and Unix line endings)
-        const messages = message.split(/\r?\n\r?\n/).map(m => m.trim()).filter(m => m.length > 0);
+        // Split messages by double new line and send each non-empty message
+        const messages = message.split('\r\n\r\n').map(m => m.trim()).filter(m => m.length > 0);
 
         for (const msg of messages) {
             try {
@@ -46,6 +43,7 @@ client.on('ready', async () => {
 
         await new Promise(resolve => setTimeout(resolve, 30000));
         fs.unlinkSync(filePath);
+        // Optionally delete the file after sending
         console.log('group_messages.txt deleted after sending.');
     } else {
         console.log('group_messages.txt does not exist. No message sent.');
@@ -55,3 +53,4 @@ client.on('ready', async () => {
     process.exit(0);
 });
 client.initialize();
+
