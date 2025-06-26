@@ -55,7 +55,7 @@ async def main():
             f.write(str(new_last_id))
 
     print("New messages saved to group_messages.txt")
-
+    await client.disconnect()  # Ensure the client is disconnected before closing the loop
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     try:
