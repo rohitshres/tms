@@ -1,0 +1,7 @@
+# Ignore node_modules folder
+node_modules/
+.vscode/
+
+# Ignore WhatsApp Web.js auth and cache folders
+.wwebjs_auth/
+.wwebjs_cache/
