@@ -1,16 +1,6 @@
 const { exec } = require('child_process');
 
-let nextRunSeconds = 0;
 const intervalSeconds = 5 * 60; // 5 minutes
-
-function showLiveTime() {
-    process.stdout.write(
-        `\r${new Date().toLocaleString()} | Next run in: ${Math.floor(nextRunSeconds / 60)
-            .toString()
-            .padStart(2, '0')}:${(nextRunSeconds % 60).toString().padStart(2, '0')} `
-    );
-    if (nextRunSeconds > 0) nextRunSeconds--;
-}
 
 function runScripts() {
     console.log(`\n[${new Date().toLocaleString()}] Running telegram.py...`);
@@ -22,7 +12,7 @@ function runScripts() {
         console.log(stdout);
 
         console.log(`[${new Date().toLocaleString()}] Running whatapp.js...`);
-        exec('node whatapp.js', (err2, stdout2, stderr2) => {
+        exec('node whatapp2.js', (err2, stdout2, stderr2) => {
             if (err2) {
                 console.error(`Error running whatapp.js: ${stderr2}`);
                 return;
@@ -30,11 +20,7 @@ function runScripts() {
             console.log(stdout2);
         });
     });
-    nextRunSeconds = intervalSeconds;
 }
-
-// Show live time and countdown every second
-setInterval(showLiveTime, 1000);
 
 // Run immediately, then every 5 minutes (300000 ms)
 runScripts();
