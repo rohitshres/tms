@@ -32,17 +32,26 @@ async def main():
 
     new_last_id = last_id
     messages_written = 0
+    messages = []
 
-    # Open the file once, append as we go
-    with open("group_messages.txt", "a", encoding="utf-8") as f:
-        async for message in client.iter_messages(group_entity, limit=50):
-            if message.id <= last_id:
-                break
-            if message.text:
-                f.write(f"{message.text}\n\n")
+    # Collect messages in a list
+    async for message in client.iter_messages(group_entity, limit=50):
+        if message.id <= last_id:
+            break
+        if message.text:
+            messages.append((message.id, message.text))
+        if message.id > new_last_id:
+            new_last_id = message.id
+
+    # Sort messages by ID (ascending)
+    messages.sort(key=lambda x: x[0])
+
+    # Write messages in ascending order
+    if messages:
+        with open("group_messages.txt", "a", encoding="utf-8") as f:
+            for _, text in messages:
+                f.write(f"{text}\n\n")
                 messages_written += 1
-            if message.id > new_last_id:
-                new_last_id = message.id
 
     # Save the latest processed message ID
     if new_last_id > last_id:
