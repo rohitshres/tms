@@ -119,7 +119,7 @@ client.on('ready', async () => {
                 if (row.hasMedia && row.mediaPath && fs.existsSync(row.mediaPath)) {
                     const media = MessageMedia.fromFilePath(row.mediaPath);
                     for (const gid of targetGroups) {
-                        //await client.sendMessage(gid, media, { caption: row.body || '' });
+                        await client.sendMessage(gid, media, { caption: row.body || '' });
                         await new Promise(r => setTimeout(r, 800)); // small delay between sends
                     }
                 } else if (row.body && row.body.trim() !== '') {
