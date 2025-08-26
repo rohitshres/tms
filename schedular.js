@@ -4,7 +4,7 @@ const path = require('path');
 const intervalSeconds = 5 * 60; // 5 minutes
 const scripts = [
   'whatappread.js',
-  'whatappknowlegde.js' // keep or remove depending on whether you want this run
+  'whatappknowledge.js' // keep or remove depending on whether you want this run
 ];
 
 let isRunning = false;
