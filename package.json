@@ -1,7 +1,9 @@
 {
   "dependencies": {
+    "better-sqlite3": "^12.2.0",
     "puppeteer": "^24.14.0",
     "qrcode-terminal": "^0.12.0",
+    "sqlite3": "^5.1.7",
     "whatsapp-web.js": "^1.30.0"
   }
 }

@@ -7,7 +7,7 @@ const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const mediaDir = path.join(__dirname, 'media');
 if (!fs.existsSync(mediaDir)) fs.mkdirSync(mediaDir, { recursive: true });
 
-const dbFile = path.join(__dirname, 'messages.sqlite');
+const dbFile = path.join(__dirname, 'knowledge.sqlite');
 const db = new sqlite3.Database(dbFile);
 
 // create table
@@ -48,18 +48,16 @@ const client = new Client({
 });
 
 // CONFIG - set your source and target group IDs
-const sourceGroupId = '120363401226236955@g.us';
+const sourceGroupId = '120363401836253492@g.us';
 const targetGroups = [
-    '120363420416221456@g.us',
-    '120363404154781450@g.us'
+    '120363404420249623@g.us',
+    '120363422511110544@g.us'
 ];
 
 client.on('qr', qr => qrcode.generate(qr, { small: true }));
 
 client.on('ready', async () => {
-  
     console.log('WhatsApp ready — storing unread messages to SQLite and forwarding unsent ones.');
-
     try {
         // 1) Fetch recent messages from source group and store to SQLite (avoid duplicates)
         const chat = await client.getChatById(sourceGroupId);
@@ -119,7 +117,7 @@ client.on('ready', async () => {
                 if (row.hasMedia && row.mediaPath && fs.existsSync(row.mediaPath)) {
                     const media = MessageMedia.fromFilePath(row.mediaPath);
                     for (const gid of targetGroups) {
-                        //await client.sendMessage(gid, media, { caption: row.body || '' });
+                        await client.sendMessage(gid, media, { caption: row.body || '' });
                         await new Promise(r => setTimeout(r, 800)); // small delay between sends
                     }
                 } else if (row.body && row.body.trim() !== '') {
