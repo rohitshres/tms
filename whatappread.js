@@ -63,14 +63,16 @@ client.on('ready', async () => {
                         const media = await msg.downloadMedia();
                         if (media) {
                             for (const groupId of targetGroups) {
-                                await client.sendMessage(groupId, media, { caption: msg.body || '' });
-                                await delay(800);
+                                console.log(`Forwarding message to ${groupId}: ${msg.body}`);
+                                //await client.sendMessage(groupId, media, { caption: msg.body || '' });
+                                await delay(1000);
                             }
                         }
                     } else if (msg.body && msg.body.trim() !== '') {
                         for (const groupId of targetGroups) {
-                            await client.sendMessage(groupId, msg.body);
-                            await delay(800);
+                            console.log(`Forwarding message to ${groupId}: ${msg.body}`);
+                            //await client.sendMessage(groupId, msg.body);
+                            await delay(1000);
                         }
                     }
 
