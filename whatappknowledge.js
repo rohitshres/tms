@@ -61,7 +61,7 @@ client.on('ready', async () => {
     try {
         // 1) Fetch recent messages from source group and store to SQLite (avoid duplicates)
         const chat = await client.getChatById(sourceGroupId);
-        const fetched = await chat.fetchMessages({ limit: 100 }); // adjust limit as needed
+        const fetched = await chat.fetchMessages({ limit: 30 }); // adjust limit as needed
         // ensure oldest-first
         fetched.sort((a, b) => a.timestamp - b.timestamp);
 
@@ -114,20 +114,31 @@ client.on('ready', async () => {
 
         for (const row of unsent) {
             try {
-                if (row.hasMedia && row.mediaPath && fs.existsSync(row.mediaPath)) {
-                    const media = MessageMedia.fromFilePath(row.mediaPath);
-                    for (const gid of targetGroups) {
-                        await client.sendMessage(gid, media, { caption: row.body || '' });
-                        await new Promise(r => setTimeout(r, 800)); // small delay between sends
+                for (const gid of targetGroups) {
+                // ensure bot can access target chat
+                    try {
+                        await client.getChatById(gid);
+                    } catch (err) {
+                        console.error(`Cannot access target group ${gid}:`, err.message || err);
+                        continue; // skip this group
                     }
-                } else if (row.body && row.body.trim() !== '') {
-                    for (const gid of targetGroups) {
-                        await client.sendMessage(gid, row.body);
-                        await new Promise(r => setTimeout(r, 500));
-                    }
-                } else {
-                    // nothing to forward, mark as sent to avoid repeated attempts
-                }
+                    
+                    let res;
+                    if (row.hasMedia && row.mediaPath && fs.existsSync(row.mediaPath)) {
+                        const media = MessageMedia.fromFilePath(row.mediaPath);
+                        console.log(`Sending media ${row.mediaPath} -> ${gid}`);
+                        res = await client.sendMessage(gid, media, { caption: row.body || '' });
+                    } else if (row.body && row.body.trim() !== '') {
+                        console.log(`Sending text -> ${gid}: ${row.body.slice(0,120)}`);
+                        res = await client.sendMessage(gid, row.body);
+                    } else {
+                        console.log(`Nothing to send for ${row.id} to ${gid}`);
+                        continue;
+                    }                   
+                                      
+                    // small delay between sends to reduce risk of rate limiting
+                    await new Promise(r => setTimeout(r, 3000));
+                }                
 
                 // mark as sent
                 await run('UPDATE messages SET isSent = 1 WHERE id = ?', [row.id]);
